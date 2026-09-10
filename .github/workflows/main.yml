@@ -1,4 +1,4 @@
-name: Build StreetRush
+name: Build StreetRush Android
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  android:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,16 +18,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build StreetRush
+      - name: Build web app
         run: npm run build
 
-      - name: Upload web build
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StreetRush-build
-          path: dist
+          name: StreetRush-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
