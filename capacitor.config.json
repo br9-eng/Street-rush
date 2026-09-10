@@ -1,0 +1,6 @@
+{
+  "appId": "com.streetrush.racing",
+  "appName": "StreetRush",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
